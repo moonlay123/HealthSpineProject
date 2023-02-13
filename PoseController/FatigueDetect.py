@@ -11,16 +11,13 @@ class FatigueDetect:
             coords[i] = (landmarks.part(i).x, landmarks.part(i).y)
         return coords
     def logic(self):
-        predictor_path = "shape_predictor_68_face_landmarks.dat"
+        predictor_path = "./shape_predictor_68_face_landmarks.dat"
         detector = dlib.get_frontal_face_detector()
-        predictor = dlib.shape_predictor(predictor_path)
+        predictor = dlib.shape_predictor(predictor_path) #РАЗОБРАТЬСЯ
         video = cv2.VideoCapture(0)
-
         detect = posemodule1.PoseDetector1()
-
         queue = np.zeros(30,dtype=int)
         queue = queue.tolist()
-
         ans = 0
         while 1>0:  #Можно изменить на нажатие какой-то кнопки
             ret,frame = video.read() #ret не нужно, оно проверяет было ли чтение успешным, frame - само изображение
@@ -29,25 +26,20 @@ class FatigueDetect:
 
             rects = detector(gray, 1)
             for i, rect in enumerate(rects):
-        # 得到坐标
                 x = rect.left()
                 y = rect.top()
                 w = rect.right() - x
                 h = rect.bottom() - y
 
-        # 绘制边框，加文字标注
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 cv2.putText(frame, "Face #{}".format(i + 1), (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2,
                     cv2.LINE_AA)
 
-        # 检测landmarks
                 landmarks = predictor(gray, rect)
                 landmarks = self.landmarks_to_np(landmarks)
-        # 标注landmarks
                 for (x, y) in landmarks:
                     cv2.circle(frame, (x, y), 2, (0, 0, 255), -1)
 
-        # 计算欧氏距离
                 d1 = np.linalg.norm(landmarks[37] - landmarks[41])
                 d2 = np.linalg.norm(landmarks[38] - landmarks[40])
                 d3 = np.linalg.norm(landmarks[43] - landmarks[47])
@@ -58,7 +50,7 @@ class FatigueDetect:
                 d_reference = (d5 + d6) / 2
                 d_judge = d_mean / d_reference
 
-                flag = int(d_judge < 0.25)  # 睁/闭眼判定标志:根据阈值判断是否闭眼,闭眼flag=1,睁眼flag=0 (阈值可调)
+                flag = int(d_judge < 0.25)
 
         # flag入队
                 queue = queue[1:len(queue)] + [flag]
@@ -103,3 +95,5 @@ class FatigueDetect:
 
         video.release()
         cv2.destroyAllWindows()
+a = FatigueDetect()
+a.logic()

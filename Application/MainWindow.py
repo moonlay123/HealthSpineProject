@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.move(300,300)
         self.resize(856,572)
         #Why doesn't work
-        oImage = QPixmap("./Application/man.png")
+        oImage = QPixmap("./man.png")
         sImage = oImage.scaled(856, 572)
         palette = QPalette()
         palette.setBrush(QPalette.Window, QBrush(sImage))

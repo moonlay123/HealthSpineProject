@@ -84,12 +84,19 @@ class StartOfWork(QMainWindow):
         startButton.mousePressEvent = self.Start
 
     def Start(self,event):
-        #self.fatigueDetect = FatigueDetect()
-        #self.fatigueDetect.logic()
+        self.fatigueDetect = FatigueDetect()
+        print(1)
+        self.fatigueDetect.logic()
+        print(2)
         data = Data()
+        print(3)
         self.settings = Settings(data)
+        print(4)
         self.settings.show()
+        print(5)
         self.settings.showMinimized()
+        print(6)
         self.close()
+        print(7)
 
 
